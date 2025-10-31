@@ -1,4 +1,3 @@
-```markdown
 # 🧠 Gemini Nano + Cloud Summarizer  
 ### Chrome Built-In AI Challenge Entry  
 
@@ -42,7 +41,6 @@ The extension was designed to highlight how developers can combine **local infer
 
 The extension first checks whether the `Summarizer` object exists and the model status is `"available"`. If so, it uses the Gemini Nano model locally. Otherwise, it loads stored API keys and forwards the cleaned webpage text to the user-selected fallback service.
 
----
 
 ## ⚙️ Installation Guide
 
@@ -210,4 +208,5 @@ You are free to use, modify, and distribute it for research or educational purpo
 
 > *Built with curiosity and care for the 2025 Chrome Built-In AI Challenge.*
 > *Empowering local intelligence, backed by ethical cloud resilience.*
+
 
