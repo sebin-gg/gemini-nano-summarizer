@@ -60,7 +60,7 @@ Restart Chrome after enabling these flags.
 1. Clone the repository:
    ```bash
    git clone https://github.com/sebin-gg/gemini-nano-summarizer
-````
+
 
 2. Go to `chrome://extensions`
 3. Enable **Developer mode**
@@ -208,5 +208,6 @@ You are free to use, modify, and distribute it for research or educational purpo
 
 > *Built with curiosity and care for the 2025 Chrome Built-In AI Challenge.*
 > *Empowering local intelligence, backed by ethical cloud resilience.*
+
 
 
