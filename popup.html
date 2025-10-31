@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Gemini Summarizer</title>
+<style>
+  :root{
+    --bg:#fff; --fg:#111; --muted:#666; --card:#fff; --accent:#0366d6; --border:#ddd;
+  }
+  .dark {
+    --bg:#0b0f14; --fg:#e6eef6; --muted:#9fb0c8; --card:#061019; --accent:#49a3ff; --border:#163140;
+  }
+  html,body { height:100%; }
+  body { font-family: Arial, sans-serif; width: 360px; padding: 12px; margin:0;
+    background:var(--bg); color:var(--fg); -webkit-font-smoothing:antialiased;
+  }
+  h3 { margin:0 0 8px 0; font-size:16px; }
+  #loading { margin: 6px 0; font-size: 13px; color:var(--muted); }
+  #controls { display:flex; gap:8px; margin:8px 0 10px 0; }
+  select, input[type="checkbox"] { margin:0; }
+  #output { background:var(--card); border:1px solid var(--border); border-radius:6px; padding:8px;
+            height:160px; overflow-y:auto; white-space:pre-wrap; color:var(--fg); }
+  input, button, select { padding:8px; border-radius:6px; border:1px solid var(--border); background:var(--card); color:var(--fg); }
+  button { cursor:pointer; }
+  .row { display:flex; gap:8px; margin-top:8px; }
+  #meta { font-size:12px; color:var(--muted); margin-top:6px; word-break:break-all; }
+  #meta a { color:var(--accent); text-decoration:none; }
+  #keysSection { margin-top:12px; padding-top:12px; border-top:1px solid var(--border); }
+  .small { font-size:12px; color:var(--muted); }
+  .actions { display:flex; gap:6px; margin-top:8px; }
+  footer { margin-top:10px; font-size:11px; color:var(--muted); text-align:right; }
+  .switch { display:flex; align-items:center; gap:6px; }
+
+  /* modal */
+  .modal-overlay {
+    display:none;
+    position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000;
+    align-items:center; justify-content:center;
+  }
+  .modal {
+    background:var(--card); color:var(--fg); border-radius:8px; padding:14px; width:320px; border:1px solid var(--border);
+  }
+  .modal .msg { margin-bottom:12px; font-size:13px; color:var(--fg); }
+  .modal .btns { display:flex; gap:8px; justify-content:flex-end; }
+
+  /* small badge for cached */
+  .badge { font-size:11px; color:var(--muted); margin-left:8px; }
+  #retryBtn { display:none; }
+</style>
+</head>
+<body>
+  <h3>Summarize with Gemini Nano</h3>
+  <div id="loading">Ready</div>
+
+  <div id="controls">
+    <div style="flex:1">
+      <label for="modeSelect" class="small">Mode</label>
+      <select id="modeSelect" title="Choose summarization mode">
+        <option value="tldr" selected>TL;DR (concise)</option>
+        <option value="keypoints">Key points (bullets)</option>
+        <option value="concise">Concise paragraph</option>
+      </select>
+    </div>
+
+    <div style="width:110px">
+      <label class="small switch"><input type="checkbox" id="includeTitle" /> Include title</label>
+      <div style="height:8px"></div>
+      <label class="small switch"><input type="checkbox" id="darkToggle" /> Dark</label>
+    </div>
+  </div>
+
+  <div id="output" aria-live="polite"></div>
+
+  <div class="row">
+    <button id="summarizeBtn">Summarize Page</button>
+    <button id="retryBtn" title="Force cloud and update cache">Retry (force)</button>
+    <button id="copyBtn">Copy</button>
+    <button id="downloadBtn">Download</button>
+    <button id="clearBtn">Clear</button>
+  </div>
+
+  <div id="meta">
+    <div id="pageTitle"></div>
+    <a id="pageUrl" href="#" target="_blank"></a>
+  </div>
+
+  <hr />
+  <div id="keysSection">
+    <h4>Cloud API Keys (Optional)</h4>
+    <div class="small" style="margin-bottom:8px">Optional: Enter API keys to enable cloud summarization</div>
+    <div id="keysForm">
+      <input id="geminiKey" type="password" placeholder="Gemini API Key" />
+      <input id="openaiKey" type="password" placeholder="OpenAI API Key" />
+      <div class="row">
+        <button id="saveKeysBtn">Save Keys</button>
+        <button id="clearKeysBtn">Clear Keys</button>
+      </div>
+    </div>
+    <div id="keysStatus" style="display:none">
+      <div class="small">☁️ Cloud APIs configured</div>
+      <button id="showKeysBtn" class="small">Show/Edit Keys</button>
+    </div>
+  </div>
+
+  <footer>v3.1</footer>
+
+  <!-- confirmation modal -->
+  <div id="confirmModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal" role="document">
+      <div id="confirmMessage" class="msg">Send page text to cloud for summarization?</div>
+      <div class="btns">
+        <button id="confirmCancel">Cancel</button>
+        <button id="confirmOk">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
