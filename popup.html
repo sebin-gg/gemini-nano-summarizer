@@ -81,7 +81,7 @@
 
   <div id="meta">
     <div id="pageTitle"></div>
-    <a id="pageUrl" href="#" target="_blank"></a>
+    <a id="pageUrl" href="#" target="_blank" rel="noopener" aria-label="Open source page"></a>
   </div>
 
   <hr />
@@ -89,8 +89,8 @@
     <h4>Cloud API Keys (Optional)</h4>
     <div class="small" style="margin-bottom:8px">Optional: Enter API keys to enable cloud summarization</div>
     <div id="keysForm">
-      <input id="geminiKey" type="password" placeholder="Gemini API Key" />
-      <input id="openaiKey" type="password" placeholder="OpenAI API Key" />
+      <input id="geminiKey" type="password" placeholder="Gemini API Key" aria-label="Gemini API Key" />
+      <input id="openaiKey" type="password" placeholder="OpenAI API Key" aria-label="OpenAI API Key" />
       <div class="row">
         <button id="saveKeysBtn">Save Keys</button>
         <button id="clearKeysBtn">Clear Keys</button>

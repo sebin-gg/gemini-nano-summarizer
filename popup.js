@@ -1,34 +1,34 @@
+// --- Storage helpers (hoisted to module scope) ---
+function storageGet(keys) {
+  return new Promise((resolve, reject) => {
+    try {
+      chrome.storage.local.get(keys, (result) => {
+        const err = chrome.runtime.lastError;
+        if (err) reject(err);
+        else resolve(result);
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
+function storageSet(obj) {
+  return new Promise((resolve, reject) => {
+    try {
+      chrome.storage.local.set(obj, () => {
+        const err = chrome.runtime.lastError;
+        if (err) reject(err);
+        else resolve();
+      });
+    } catch (e) {
+      reject(e);
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("popup.js loaded");
-
-  // --- Storage helpers (must be before use) ---
-  function storageGet(keys) {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.storage.local.get(keys, (result) => {
-          const err = chrome.runtime.lastError;
-          if (err) reject(err);
-          else resolve(result);
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
-
-  function storageSet(obj) {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.storage.local.set(obj, () => {
-          const err = chrome.runtime.lastError;
-          if (err) reject(err);
-          else resolve();
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
 
   // --- DOM Elements ---
   const summarizeBtn = document.getElementById("summarizeBtn");
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
   storageGet(["darkMode"])
     .then(({ darkMode }) => {
       if (typeof darkMode === "boolean") applyTheme(darkMode);
-      else applyTheme(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      else applyTheme(window.matchMedia?.('(prefers-color-scheme: dark)').matches);
     })
     .catch(() => applyTheme(false));
 
