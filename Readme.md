@@ -1,146 +1,131 @@
-# 🧠 Gemini Nano + Cloud Summarizer  
-### Chrome Built-In AI Challenge Entry  
+# 🧠 Gemini Nano + Cloud Summarizer
+### Chrome Built-In AI Challenge entry
 
-**Author:** [Sebin Mathew](https://www.linkedin.com/in/sebin-m/)  
+**Author:** [Sebin Mathew](https://www.linkedin.com/in/sebin-m/)
 **GitHub:** [sebin-gg](https://github.com/sebin-gg)
 
 ---
 
 ## 🌟 Overview
-**Gemini Nano + Cloud Summarizer** is a modern Chrome extension built using **Manifest V3** that intelligently summarizes web pages with Google’s latest on-device AI technology.  
-It utilizes Chrome’s new **Summarizer API**, powered by **Gemini Nano**, to perform summarization locally on the user’s device. When the local model is unavailable or restricted, the extension automatically switches to a **cloud-based fallback**, using either **Google Gemini 1.5 Flash** or **OpenAI GPT-3.5 Turbo**.
 
-The extension was designed to highlight how developers can combine **local inference** and **cloud APIs** for adaptive AI experiences, balancing performance, privacy, and accessibility.  
+A Chrome extension, built on Manifest V3, that summarizes the page you are reading from a popup. It uses Chrome's built-in Summarizer API, powered by Gemini Nano, so summarization runs entirely on your device. When the local model is unavailable or restricted, you can save a cloud API key and the extension falls back to Google Gemini 1.5 Flash or OpenAI GPT-3.5 Turbo.
 
----
-
-## 🚀 Features
-
-- 🧠 **On-Device AI Summarization:** Uses Chrome's built-in Summarizer API (Gemini Nano) for offline or privacy-sensitive summarization.  
-- ☁️ **Automatic Cloud Fallback:** Switches to Gemini Pro or OpenAI GPT if the local model is unavailable or restricted.
-- 🔄 **Smart Caching:** Caches summaries locally to avoid repeated API calls for the same content.
-- 🌓 **Dark Mode Support:** Includes automatic dark mode detection and manual toggle.
-- 📋 **Copy & Download:** Easy options to copy summaries or download as text files.
-- 🎯 **Multiple Modes:** Choose between TL;DR, Key Points, or Concise Paragraph formats.
-- 🔐 **Secure API Key Management:** Keys are stored safely in `chrome.storage.sync` and never transmitted without consent.
-- 💾 **State Persistence:** Remembers your last used mode and theme preferences.
-- 🚫 **Restricted Page Protection:** Gracefully handles chrome:// and edge:// pages.
-- ⚡ **Optimized Performance:** Text truncation, loading states, and error recovery.
-
----
-
-## 🧰 Technical Architecture
+The project was built for the 2025 Chrome Built-In AI Challenge to show how local inference and cloud APIs can combine into one adaptive, privacy-friendly experience.
 
 | Component | Purpose |
 |------------|----------|
-| **Manifest V3** | Modern Chrome extension manifest supporting ES modules and secure APIs |
-| **Summarizer API** | Provides access to Gemini Nano, Chrome’s built-in on-device AI model |
-| **Fetch API** | Handles fallback API requests to Google Gemini or OpenAI |
-| **Chrome Storage Sync** | Securely stores API keys and settings |
-| **HTML/CSS/JS** | Builds a lightweight popup UI for user interaction |
+| **Manifest V3** | Modern Chrome extension platform |
+| **Summarizer API** | Access to Gemini Nano, Chrome's on-device AI model |
+| **Fetch API** | Cloud requests to Gemini or OpenAI |
+| **Chrome Storage** | Stores API keys and settings |
+| **HTML/CSS/JS** | Lightweight popup UI |
 
-The extension first checks whether the `Summarizer` object exists and the model status is `"available"`. If so, it uses the Gemini Nano model locally. Otherwise, it loads stored API keys and forwards the cleaned webpage text to the user-selected fallback service.
+The popup checks whether the `Summarizer` object exists and reports `"available"`. Saved cloud keys take priority; with no keys set, the extension uses the local model. When both a Gemini and an OpenAI key are saved, Gemini runs first and OpenAI is used if it fails.
 
+---
 
-## ⚙️ Installation Guide
+## ⚙️ Quickstart
 
-### 1. Enable Experimental Chrome AI Flags
-Open Chrome Canary (version 144 or higher) and enable:
+Requires Chrome 144 or higher (Chrome Canary recommended) and hardware that meets the requirements listed under known limitations.
+
+### 1. Enable the Chrome AI flags
+
+Open `chrome://flags`, enable these two flags, then restart Chrome:
 
 ```
-
 chrome://flags/#prompt-api-for-gemini-nano          → Enabled (Multilingual)
 chrome://flags/#optimization-guide-on-device-model  → Enabled (BypassPerfRequirement)
+```
 
-````
+### 2. Load the extension
 
-Restart Chrome after enabling these flags.
-
-### 2. Load the Extension
 1. Clone the repository:
    ```bash
    git clone https://github.com/sebin-gg/gemini-nano-summarizer
-
-
-2. Go to `chrome://extensions`
-3. Enable **Developer mode**
+   ```
+2. Go to `chrome://extensions`.
+3. Enable **Developer mode**.
 4. Click **Load unpacked** and select the cloned folder.
 
-### 3. Test the Extension
+### 3. Try it
 
-Open any long article (for example, a Wikipedia page) and click the extension icon.
-Press **“Summarize Page”** to start.
-
----
-
-## 🔑 API Key Setup for Cloud Fallback
-
-If the local Gemini Nano model is not available or fails to produce a summary:
-
-1. Obtain a **Gemini API key** from [Google AI Studio](https://makersuite.google.com/app/apikey).
-2. Optionally, get an **OpenAI API key** from [OpenAI Platform](https://platform.openai.com/account/api-keys).
-3. Enter these keys in the popup’s *Fallback API Keys* section and click **Save Keys**.
-   The keys are encrypted and stored securely using `chrome.storage.sync`.
-4. The extension automatically uses Gemini first, then OpenAI if needed.
+Open any long article (a Wikipedia page works well), click the extension icon, and press **Summarize Page**.
 
 ---
 
-## 🧩 Usage Workflow
+## ⚡ Features
 
-1. Navigate to any webpage containing rich textual content.
+- 🧠 **On-device AI:** Summaries run locally through Chrome's built-in Summarizer API (Gemini Nano), with no server involved.
+- ☁️ **Cloud fallback:** Switches to Gemini 1.5 Flash or OpenAI GPT-3.5 Turbo when the local model is unavailable or restricted.
+- 🎯 **Multiple modes:** Choose TL;DR, Key Points, or Concise Paragraph.
+- 🌓 **Dark mode:** Follows your system theme, with a manual toggle.
+- 📋 **Copy and download:** Copy any summary to the clipboard or save it as a `.txt` file.
+- 🔐 **Keys stay local:** API keys sit in Chrome storage on your device and only travel to the provider you chose, when you run a cloud summary.
+- 💾 **State persistence:** Remembers your theme preference between sessions.
+- 🚫 **Restricted page protection:** Handles `chrome://` and `edge://` pages gracefully.
+- ⚡ **Optimized performance:** Input capped at ~8 KB of text, loading states, and error recovery.
+
+---
+
+## 🔑 API key setup for cloud fallback
+
+If the local Gemini Nano model is unavailable, or you prefer cloud results:
+
+1. Get a **Gemini API key** from [Google AI Studio](https://makersuite.google.com/app/apikey).
+2. Optionally get an **OpenAI API key** from the [OpenAI Platform](https://platform.openai.com/account/api-keys).
+3. Paste the keys into the *Fallback API Keys* section of the popup and click **Save Keys**.
+4. Run a summary. With both keys saved, Gemini is tried first and OpenAI takes over if it fails.
+
+---
+
+## 🧩 Usage workflow
+
+1. Navigate to a page with substantial text.
 2. Open the extension popup.
-3. (Optional) Choose your preferred summarization mode:
-   - **TL;DR:** Quick, concise summary
-   - **Key Points:** Bulleted list of main points
-   - **Concise Paragraph:** Flowing paragraph format
-4. (Optional) Toggle "Include title" to include page title in summary
-5. Click **Summarize Page** to begin.
-6. You will see live messages such as:
-   * *⬇️ Downloading model (45%)* – Gemini Nano is being installed locally
-   * *🧠 Initializing model…* – The summarizer is preparing to run
-   * *⚙️ Summarizing…* – Text is being processed
-   * *✅ Done.* – Summary appears in the result box
+3. Optional: pick a mode (TL;DR, Key Points, or Concise Paragraph) and tick **Include title** to add the page title.
+4. Click **Summarize Page**.
 
-For cloud fallback:
-- If a cached version exists, it's shown immediately with age
-- Click "Retry (force)" to bypass cache and get fresh summary
-- Explicit confirmation required before sending to cloud
-- Clear status messages show current operation state
+Live status messages tell you what is happening:
 
----
+* *⬇️ Downloading model (45%)* – Gemini Nano is installing locally
+* *🧠 Initializing model…* – the summarizer is preparing to run
+* *⚙️ Summarizing…* – text is being processed
+* *✅ Done.* – the summary appears in the result box
 
-## 🧠 Example Summary Output
+For cloud runs, the status shows *☁️ Using cloud summarization...* while the request executes and *✅ Done (Cloud)* when it finishes.
+
+Example output:
 
 ```
 ✅ Done.
-• Chrome’s Summarizer API enables on-device AI summarization.
+• Chrome's Summarizer API enables on-device AI summarization.
 • Gemini Nano runs locally for faster, private text processing.
 • Falls back to Gemini Flash or OpenAI when the local model is unavailable.
 ```
 
 ---
 
-## 🛡️ Privacy and Security
+## 🛡️ Privacy and security
 
-* The extension **never sends data** externally without explicit user consent.
-* When using the local model, all processing happens **entirely on the device**.
-* API keys are stored using **Chrome’s Sync Storage**, not in plain files or localStorage.
-* Cloud fallbacks are clearly indicated before data is transmitted.
-* The project complies with Google’s Generative AI Prohibited Use Policy.
-
----
-
-## ⚠️ Known Limitations
-
-* The **Summarizer API** may produce empty results in Chrome versions below 146 due to restricted rollout.
-* Requires **16 GB RAM or higher** and **unmetered internet** for model download.
-* First-time model installation may take 5–15 minutes (~1–2 GB).
-* On certain profiles, `outputLanguage` attestation may still be unavailable.
-* The popup environment may time out on very large pages; input is capped to ~8 KB of text.
+* Nothing leaves your device unless you save a cloud key and start a summary.
+* In local mode, all processing happens entirely on the device.
+* API keys live in Chrome storage, not in plain files or localStorage.
+* Cloud use is always visible in the status line before data is sent.
+* The project complies with Google's Generative AI Prohibited Use Policy.
 
 ---
 
-## 💻 Permissions Used
+## ⚠️ Requirements and known limitations
+
+* Requires **16 GB RAM or higher** and **unmetered internet** for the model download.
+* First-time model installation downloads ~1-2 GB and can take 5-15 minutes.
+* The Summarizer API may produce empty results on Chrome versions below 146 due to restricted rollout.
+* On certain profiles, `outputLanguage` attestation is still unavailable.
+* Very large pages can time out the popup; input is capped at ~8 KB of text.
+
+---
+
+## 💻 Permissions used
 
 ```json
 "permissions": [
@@ -150,11 +135,11 @@ For cloud fallback:
 ]
 ```
 
-These minimal permissions allow the extension to read visible page text, inject scripts to extract content, and store API keys securely.
+These minimal permissions let the extension read visible page text, inject a script to extract it, and store your keys and settings.
 
 ---
 
-## 🧩 Project Structure
+## 🧩 Project structure
 
 ```
 /gemini-nano-summarizer
@@ -170,12 +155,11 @@ These minimal permissions allow the extension to read visible page text, inject 
 
 ## 📜 License
 
-This project is released under the **MIT License**.
-You are free to use, modify, and distribute it for research or educational purposes.
+Released under the **MIT License**. You are free to use, modify, and distribute it for research or educational purposes.
 
 ---
 
-## 🤝 Contact & Profiles
+## 🤝 Contact and profiles
 
 * **Author:** Sebin Mathew
 * **LinkedIn:** [linkedin.com/in/sebin-m](https://www.linkedin.com/in/sebin-m/)
@@ -183,31 +167,27 @@ You are free to use, modify, and distribute it for research or educational purpo
 
 ---
 
-## 🏆 Submission Notes for Chrome Built-In AI Challenge
+## 🏆 Submission notes for the Chrome Built-In AI Challenge
 
 ### 🔧 Innovation
 
-* Integrates **on-device AI inference** with **cloud API failover** seamlessly.
-* Demonstrates robust error handling and UX feedback for emerging AI APIs.
+* Combines on-device AI inference with cloud API failover in a single popup.
+* Demonstrates robust error handling and clear UX feedback for emerging AI APIs.
 * Serves as a template for privacy-conscious Chrome AI extensions.
 
-### 🔒 Privacy & Ethics
+### 🔒 Privacy and ethics
 
-* Local summarization runs fully offline; cloud mode explicitly notifies the user.
-* User credentials and keys never leave their Chrome profile.
-* Complies with Chrome’s permission and origin policies.
+* Local summarization runs fully offline; cloud mode shows its status before sending anything.
+* API keys never leave your Chrome profile.
+* Complies with Chrome's permission and origin policies.
 
-### 📈 Future Enhancements
+### 📈 Future enhancements
 
-* Add **streaming summaries** using `summarizeStreaming()`.
-* Extend support for multilingual summarization (e.g., `outputLanguage: "es"` or `"ja"`).
-* Integrate caching for repeated summarizations of the same page.
-* Add automatic summarization triggers via context menu actions.
+* Add streaming summaries via `summarizeStreaming()`.
+* Extend multilingual summarization (for example, `outputLanguage: "es"` or `"ja"`).
+* Add automatic summarization triggers through context menu actions.
 
 ---
 
 > *Built with curiosity and care for the 2025 Chrome Built-In AI Challenge.*
 > *Empowering local intelligence, backed by ethical cloud resilience.*
-
-
-
