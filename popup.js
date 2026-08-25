@@ -117,6 +117,32 @@ document.addEventListener("DOMContentLoaded", () => {
     statusText.textContent = "Ready";
   });
 
+  // --- Confirm Modal (dialog) ---
+  const confirmModal = document.getElementById("confirmModal");
+  const confirmOk = document.getElementById("confirmOk");
+  const confirmCancel = document.getElementById("confirmCancel");
+
+  function openConfirmModal() {
+    if (confirmModal) confirmModal.showModal();
+  }
+
+  function closeConfirmModal() {
+    if (confirmModal) confirmModal.close();
+  }
+
+  confirmOk?.addEventListener("click", () => {
+    closeConfirmModal();
+    // Cloud summarization logic is already in the summarizeBtn handler
+    summarizeBtn.click();
+  });
+
+  confirmCancel?.addEventListener("click", closeConfirmModal);
+
+  // Close on backdrop click
+  confirmModal?.addEventListener("click", (e) => {
+    if (e.target === confirmModal) closeConfirmModal();
+  });
+
   // --- Summarize Button ---
   let isProcessing = false;
   summarizeBtn.addEventListener("click", async () => {
