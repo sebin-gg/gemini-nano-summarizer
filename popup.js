@@ -27,6 +27,11 @@ function storageSet(obj) {
   });
 }
 
+// --- Gemini Nano availability ---
+async function checkSummarizer() {
+  return typeof Summarizer !== "undefined";
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("popup.js loaded");
 
@@ -122,10 +127,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const confirmOk = document.getElementById("confirmOk");
   const confirmCancel = document.getElementById("confirmCancel");
 
-  function openConfirmModal() {
-    if (confirmModal) confirmModal.showModal();
-  }
-
   function closeConfirmModal() {
     if (confirmModal) confirmModal.close();
   }
@@ -210,10 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
   async function getPageContentSafe() {
     // Replace this with logic that reads from the current tab if needed
     return { text: document.title || "Example text content", title: "Demo Page", url: "http://example.com" };
-  }
-
-  async function checkSummarizer() {
-    return typeof Summarizer !== "undefined";
   }
 
   // --- Cloud Summarization (Gemini > OpenAI fallback) ---
