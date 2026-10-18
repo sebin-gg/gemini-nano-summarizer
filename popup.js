@@ -60,14 +60,25 @@ document.addEventListener("DOMContentLoaded", () => {
     if (darkToggle) darkToggle.checked = !!dark;
   }
 
-  storageGet(["darkMode"])
-    .then(({ darkMode }) => {
-      if (typeof darkMode === "boolean") applyTheme(darkMode);
-      else applyTheme(window.matchMedia?.('(prefers-color-scheme: dark)').matches);
-    })
-    .catch(() => applyTheme(false));
+  async function initializeTheme() {
+    try {
+      const { darkMode } = await storageGet(["darkMode"]);
+      const shouldUseDark = typeof darkMode === "boolean"
+        ? darkMode
+        : window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+      await applyTheme(!!shouldUseDark);
+    } catch {
+      await applyTheme(false);
+    }
+  }
 
-  if (darkToggle) darkToggle.addEventListener("change", () => applyTheme(!!darkToggle.checked));
+  void initializeTheme().catch(console.warn);
+
+  if (darkToggle) {
+    darkToggle.addEventListener("change", () => {
+      void applyTheme(!!darkToggle.checked).catch(console.warn);
+    });
+  }
 
   // --- Load Keys ---
   storageGet(["geminiKey", "openaiKey"]).then(({ geminiKey = "", openaiKey = "" }) => {
