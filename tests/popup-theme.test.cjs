@@ -4,14 +4,16 @@ const { join } = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
 
-const popupSource = readFileSync(join(__dirname, "..", "popup.js"), "utf8");
+const popupPath = join(__dirname, "..", "popup.js");
+const popupSource = readFileSync(popupPath, "utf8");
 
-function startPopup({ data = {}, failGet = false, failSet = false } = {}) {
+function startPopup({ data = {}, failGet = false, failSet = false, prefersDark = false } = {}) {
   const elements = new Map();
   const darkClasses = new Set();
   const writes = [];
   let lastError = null;
   let onReady;
+  let onThemeChange;
 
   const document = {
     title: "Test page",
@@ -29,7 +31,9 @@ function startPopup({ data = {}, failGet = false, failSet = false } = {}) {
         elements.set(id, {
           checked: false,
           value: "",
-          addEventListener() {},
+          addEventListener(name, callback) {
+            if (id === "darkToggle" && name === "change") onThemeChange = callback;
+          },
           close() {},
           click() {},
         });
@@ -69,14 +73,15 @@ function startPopup({ data = {}, failGet = false, failSet = false } = {}) {
     console: { log() {}, warn() {}, error() {} },
     document,
     queueMicrotask,
-    window: { matchMedia: () => ({ matches: false }) },
-  });
+    window: { matchMedia: () => ({ matches: prefersDark }) },
+  }, { filename: popupPath });
   onReady();
 
   return {
     darkClasses,
     darkToggle: elements.get("darkToggle"),
     writes,
+    changeTheme: () => onThemeChange?.(),
     settle: () => new Promise((resolve) => setImmediate(resolve)),
   };
 }
@@ -97,4 +102,17 @@ test("theme initialization falls back to light mode when storage fails", async (
   assert.equal(popup.darkClasses.has("dark"), false);
   assert.equal(popup.darkToggle.checked, false);
   assert.deepEqual(popup.writes.map(({ darkMode }) => darkMode), [false]);
+});
+
+test("theme initialization follows system preference and handles toggle changes", async () => {
+  const popup = startPopup({ prefersDark: true });
+  await popup.settle();
+
+  assert.equal(popup.darkClasses.has("dark"), true);
+  popup.darkToggle.checked = false;
+  popup.changeTheme();
+  await popup.settle();
+
+  assert.equal(popup.darkClasses.has("dark"), false);
+  assert.deepEqual(popup.writes.map(({ darkMode }) => darkMode), [true, false]);
 });
