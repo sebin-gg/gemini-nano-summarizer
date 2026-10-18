@@ -31,6 +31,8 @@ jobs:
           if [ -n "$files" ]; then
             for f in $files; do node --check "$f"; done
           fi
+      - name: Run Node tests
+        run: node --test tests/*.test.cjs
       - name: Check HTML
         run: |
           set -e
